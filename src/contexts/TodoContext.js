@@ -1,24 +1,36 @@
-import React, {createContext, useState}  from 'react';
+import React, {createContext, useReducer, useEffect}  from 'react';
+import { todoReducer } from '../reducers/TodoReducer';
+import { GET_TODOS, SAVE_TODOS } from '../reducers/types';
 
 export const TodoContext = createContext();
 
 const TodoContextProvider = ({children}) => {
-    const [todos, setTodos] = useState([
-        {id: 1, title: 'Việc 1'},
-        {id: 2, title: 'Việc 2'},
-        {id: 3, title: 'Việc 3'}
-    ]);
+    const [todos, dispatch] = useReducer(todoReducer, [])
 
-    const addTodo = todo => {
-        setTodos([...todos, todo])
-    }
+    useEffect(()=> {
+        dispatch({
+            type: GET_TODOS,
+            payload: null
+        })
+    },[])
 
-    const deleteTodo = id => {
-        setTodos(todos.filter(todo => todo.id !== id))
-    }
+    useEffect(() => {
+        dispatch({
+            type: SAVE_TODOS,
+            payload: {todos}
+        })
+    }, [todos])
+
+    // const addTodo = todo => {
+    //     setTodos([...todos, todo])
+    // }
+
+    // const deleteTodo = id => {
+    //     setTodos(todos.filter(todo => todo.id !== id))
+    // }
 
     const todoContextData = {
-        todos, addTodo, deleteTodo
+        todos, dispatch
     }
 
     return (
